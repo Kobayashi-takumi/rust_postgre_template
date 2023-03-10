@@ -1,6 +1,6 @@
 # 概要
 
-Rust + SQLx + PostgreSQL サンプル
+Rust + SQLx + PostgreSQL サンプル  
 ドメイン駆動 + unit of work + CQRS のパターンで実装
 
 # 環境
