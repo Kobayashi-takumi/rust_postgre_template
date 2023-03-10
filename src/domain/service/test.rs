@@ -1,3 +1,4 @@
+use super::interface::IService;
 use crate::domain::model::test::Test;
 use crate::infrastructure::{
     repository::{interface::IRepository, test_repositpry::TestRepository},
@@ -13,18 +14,19 @@ pub struct TestService<'a, DB: Database + Sync + Send, UnitOfWork: IUnitOfWork<'
     database: PhantomData<DB>,
 }
 
-impl<'a, DB, UnitOfWork> TestService<'a, DB, UnitOfWork>
+#[async_trait::async_trait]
+impl<'a, DB, UnitOfWork> IService<'a, DB, UnitOfWork, ()> for TestService<'a, DB, UnitOfWork>
 where
     DB: Database + Sync + Send,
     UnitOfWork: IUnitOfWork<'a, DB> + Sync + Send,
 {
-    pub fn new(unit_of_work: &'a UnitOfWork) -> Self {
+    fn new(unit_of_work: &'a UnitOfWork) -> Self {
         Self {
             uow: unit_of_work,
             database: PhantomData,
         }
     }
-    pub async fn execute(&self) -> Result<()> {
+    async fn execute(&self, _: &()) -> Result<()> {
         let repo = TestRepository::new(self.uow);
         let test = Test {
             id: Ulid::new().to_string(),

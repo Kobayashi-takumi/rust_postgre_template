@@ -2,7 +2,7 @@ mod domain;
 mod infrastructure;
 
 use anyhow::Result;
-use domain::service::test::TestService;
+use domain::service::{interface::IService, test::TestService};
 use infrastructure::database::{IHandler, PgHandler};
 use infrastructure::unit_of_work::{IUnitOfWork, PgUnitOfWork};
 use std::path::Path;
@@ -20,7 +20,7 @@ async fn main() -> Result<()> {
     let transaction = db.transaction().await?;
     let uow = PgUnitOfWork::new(transaction);
     let service = TestService::new(&uow);
-    service.execute().await?;
+    service.execute(&()).await?;
     uow.commit().await?;
     Ok(())
 }
